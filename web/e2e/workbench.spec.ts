@@ -1,0 +1,24 @@
+import { test, expect } from '@playwright/test';
+test('real catalog, version installation and responsive navigation',async({page})=>{
+  const errors:string[]=[];
+  page.on('pageerror',e=>errors.push(e.message));
+  await page.goto('/');
+  await expect(page.getByRole('heading',{name:'让科研工具，成为你的工作流。'})).toBeVisible();
+  await page.screenshot({path:'../.local/overview.png',fullPage:true});
+  await page.getByRole('button',{name:'技能库',exact:true}).click();
+  await page.getByPlaceholder('搜索技能、科研用途或仓库…').fill('scientific-writing');
+  await page.getByRole('button',{name:'scientific-writing',exact:true}).click();
+  await expect(page.getByRole('dialog',{name:'技能详情'})).toBeVisible();
+  await page.getByRole('button',{name:'安装当前版本'}).click();
+  await expect(page.getByRole('status')).toContainText('固定版本已安装');
+  await page.getByRole('button',{name:'关闭详情'}).click();
+  await page.getByRole('button',{name:'比较中心',exact:true}).click();
+  await expect(page.getByText('尚无实测结果')).toBeVisible();
+  await page.getByRole('button',{name:'设置',exact:true}).click();
+  await expect(page.getByRole('heading',{name:'代码执行环境'})).toBeVisible();
+  await page.setViewportSize({width:390,height:844});
+  await page.getByRole('button',{name:'总览',exact:true}).click();
+  await page.screenshot({path:'../.local/mobile.png',fullPage:true});
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy();
+  expect(errors).toEqual([]);
+});
