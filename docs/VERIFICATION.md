@@ -16,10 +16,10 @@
 |---|---|
 | Python pytest | 42项通过，覆盖目录事务、中文搜索、万条独立测试数据、月末、并发预算、模型传输、基准核验、取消、版本替代/回退、失败恢复与公开差异报告等 |
 | Ruff | 全部通过 |
-| npm / Vitest | 3 项通过：中文检索、未实测状态、用户确认替代流程 |
+| npm / Vitest | 5 项通过：中文检索、未实测状态、用户确认替代流程、帮助导航、示例填入与保留已有草稿 |
 | TypeScript / Vite | 生产构建通过 |
 | npm audit | 0 个已知漏洞，审计结果仅反映当时登记状态 |
-| Playwright / Edge | 真实快照检索、scientific-writing 安装、导航、设置与390px手机布局通过，无页面脚本异常 |
+| Playwright / Edge | 2 项流程通过：真实快照检索、scientific-writing 安装、导航和设置；离线帮助阅读、示例草稿、拒绝覆盖、章节跳转与常见问题展开；390px手机布局无横向溢出，无页面脚本异常 |
 | Windows start.ps1 | 依赖检查后成功启动8765，health返回ok，真实目录统计197/2 |
 | Crossref真实联网 | DOI 10.1038/nature14539 → Deep learning，2015-05-27；这是元数据工具验证 |
 | HTTP模型协议集成 | 本地测试HTTP服务模拟Ollama传输，生成Markdown/DOCX、保存token与实际返回模型标识；不是实际模型效果评测 |
@@ -27,6 +27,8 @@
 | GitHub Actions | 2026-10-10 push/PR两轮通过：Windows与Ubuntu后端测试、前端测试/构建、Docker runner实际计算、PNG生成与输入只读核验；见下方链接 |
 
 测试数据均使用临时目录，不混入公共快照或用户项目。公开界面截图来自真实目录与空个人任务列表。
+
+工作台使用说明此次变更已重新执行完整前端测试、TypeScript/Vite 构建与上述两项浏览器流程，并检查桌面与手机截图。查看说明、填入示例未发起运行请求，不会自动调用付费模型。后端没有变更，Python 与 Docker 记录沿用本日此前验证。
 
 远程验证：[PR检查](https://github.com/milestonedad-lang/research-skills-workbench/actions/runs/38046094550)、[首次推送检查](https://github.com/milestonedad-lang/research-skills-workbench/actions/runs/38046018540)。代码提交 `fdc83390fdbc0fb1bd27acff43dd4f6522e0adaa`。源码已发布到 [feature/workbench-v0.1](https://github.com/milestonedad-lang/research-skills-workbench/tree/feature/workbench-v0.1)，审阅入口为 [PR #1](https://github.com/milestonedad-lang/research-skills-workbench/pull/1)。
 

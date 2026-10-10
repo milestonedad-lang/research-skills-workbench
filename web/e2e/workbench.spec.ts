@@ -22,3 +22,37 @@ test('real catalog, version installation and responsive navigation',async({page}
   expect(await page.evaluate(()=>document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy();
   expect(errors).toEqual([]);
 });
+
+test('offline help, task drafts and mobile guide stay usable',async({page,context})=>{
+  const errors:string[]=[];
+  const launches:string[]=[];
+  page.on('pageerror',e=>errors.push(e.message));
+  page.on('request',request=>{if(request.method()==='POST'&&request.url().endsWith('/api/v1/runs'))launches.push(request.url());});
+  await page.goto('/');
+  await expect(page.getByRole('heading',{name:'让科研工具，成为你的工作流。'})).toBeVisible();
+  await page.getByRole('button',{name:'阅读首次使用指南'}).click();
+  await expect(page.getByRole('heading',{name:'从第一次使用，到可复现的研究'})).toBeVisible();
+  await page.screenshot({path:'../.local/help-desktop.png',fullPage:true});
+  await context.setOffline(true);
+  await page.getByRole('button',{name:'填入写作任务',exact:true}).click();
+  await expect(page.getByLabel('科研任务')).toContainText('研究设计');
+  await page.getByLabel('科研任务').fill('我的未完成研究任务');
+  await page.getByRole('button',{name:'使用说明',exact:true}).click();
+  page.once('dialog',dialog=>dialog.dismiss());
+  await page.getByRole('button',{name:'填入数据分析任务',exact:true}).click();
+  await expect(page.getByRole('heading',{name:'从第一次使用，到可复现的研究'})).toBeVisible();
+  await page.getByRole('button',{name:'科研项目',exact:true}).click();
+  await expect(page.getByLabel('科研任务')).toHaveValue('我的未完成研究任务');
+  await page.getByRole('button',{name:'使用说明',exact:true}).click();
+  await page.setViewportSize({width:390,height:844});
+  await page.getByRole('link',{name:'模型与代码环境',exact:true}).click();
+  await expect(page.getByRole('heading',{name:'02 · 配置模型与代码环境'})).toBeInViewport();
+  await page.screenshot({path:'../.local/help-mobile.png',fullPage:true});
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy();
+  await page.getByText('资料发到哪里，如何备份和换电脑',{exact:true}).click();
+  await expect(page.getByText(/备份前停止任务和服务/)).toBeVisible();
+  await page.getByRole('button',{name:'去配置模型',exact:true}).click();
+  await expect(page.getByRole('heading',{name:'添加或更新模型'})).toBeVisible();
+  expect(launches).toEqual([]);
+  expect(errors).toEqual([]);
+});

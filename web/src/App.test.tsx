@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import { beforeEach, afterEach, expect, test, vi } from 'vitest';
 import App from './App';
 
@@ -17,6 +17,29 @@ test('comparison starts with an unmeasured state rather than a fabricated leader
   render(<App />);
   fireEvent.click(screen.getByRole('button', {name:'比较中心'}));
   expect(await screen.findByText(/尚无实测结果/)).toBeInTheDocument();
+});
+
+test('help guides an unconfigured researcher to model settings', async () => {
+  render(<App />);
+  fireEvent.click(within(screen.getByRole('navigation', {name:'主导航'})).getByRole('button', {name:'使用说明'}));
+  expect(await screen.findByRole('heading', {name:'从第一次使用，到可复现的研究'})).toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', {name:'去配置模型'}));
+  expect(screen.getByRole('heading', {name:'添加或更新模型'})).toBeInTheDocument();
+});
+
+test('help example fills a draft and preserves an existing task when replacement is declined', async () => {
+  render(<App />);
+  fireEvent.click(screen.getByRole('button', {name:'阅读首次使用指南'}));
+  fireEvent.click(screen.getByRole('button', {name:'填入写作任务'}));
+  const draft = screen.getByLabelText('科研任务');
+  expect((draft as HTMLTextAreaElement).value).toContain('研究设计');
+  expect(screen.getByRole('button', {name:'开始运行'})).toBeDisabled();
+  fireEvent.change(draft, {target:{value:'我的未完成研究任务'}});
+  fireEvent.click(screen.getByRole('button', {name:'使用说明'}));
+  vi.stubGlobal('confirm', vi.fn(() => false));
+  fireEvent.click(screen.getByRole('button', {name:'填入数据分析任务'}));
+  fireEvent.click(screen.getByRole('button', {name:'科研项目'}));
+  expect(screen.getByLabelText('科研任务')).toHaveValue('我的未完成研究任务');
 });
 
 test('user can replace an installed skill only after reviewing and confirming the target', async () => {
