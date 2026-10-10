@@ -66,7 +66,7 @@ git push -u origin feature/workbench-v0.1
 
 如果 origin 已存在，先 `git remote -v` 核对地址，不要重复添加。推送时按 Git 的登录提示完成 GitHub 认证，密钥不应填写到源码文件中。
 
-在 GitHub 点击 Compare & pull request，检查 Platform checks 的测试结果。通过后将开发分支合并到默认分支。月末定时 Actions 只有默认分支中的工作流会自动执行，因此仅推送开发分支不会启用自动月末扫描。
+本项目已建立 [草稿 PR #1](https://github.com/milestonedad-lang/research-skills-workbench/pull/1)。查看部署指南和验收边界后，点击 Ready for review，再检查 Platform checks 并合并到默认分支。其他贡献可点击 Compare & pull request 创建PR。月末定时 Actions 只有默认分支中的工作流会自动执行，因此仅推送开发分支不会启用自动月末扫描。
 
 ## 5. 开启月末更新
 

@@ -24,8 +24,11 @@
 | Crossref真实联网 | DOI 10.1038/nature14539 → Deep learning，2015-05-27；这是元数据工具验证 |
 | HTTP模型协议集成 | 本地测试HTTP服务模拟Ollama传输，生成Markdown/DOCX、保存token与实际返回模型标识；不是实际模型效果评测 |
 | 快照校验 | snapshot.json 与 snapshot.sha256 一致 |
+| GitHub Actions | 2026-10-10 push/PR两轮通过：Windows与Ubuntu后端测试、前端测试/构建、Docker runner实际计算、PNG生成与输入只读核验；见下方链接 |
 
 测试数据均使用临时目录，不混入公共快照或用户项目。公开界面截图来自真实目录与空个人任务列表。
+
+远程验证：[PR检查](https://github.com/milestonedad-lang/research-skills-workbench/actions/runs/38046094550)、[首次推送检查](https://github.com/milestonedad-lang/research-skills-workbench/actions/runs/38046018540)。代码提交 `fdc83390fdbc0fb1bd27acff43dd4f6522e0adaa`。源码已发布到 [feature/workbench-v0.1](https://github.com/milestonedad-lang/research-skills-workbench/tree/feature/workbench-v0.1)，审阅入口为 [PR #1](https://github.com/milestonedad-lang/research-skills-workbench/pull/1)。
 
 ## 已覆盖的重要行为
 
@@ -42,9 +45,9 @@
 ## 尚未实际验证或发布
 
 1. **真实生成模型效果**：本机没有用户配置的API密钥或可用Ollama模型，未调用付费模型、未产生真实技能胜负排名。需在设置中配置模型，再使用公开样例与预算完成实测。
-2. **Docker执行**：本机未安装Docker，未真实运行隔离代码容器、超时/取消容器与科研绘图。提供 `scripts/runner_smoke.py`，CI runner job会构建镜像并实际计算、生成PNG、检查输入只读；CI运行结果仍待远程发布后查看。
-3. **新电脑与其他系统**：当前Windows环境启动通过，干净新电脑、Linux/macOS与Compose仍需实机验证；CI包含Windows/Linux后端，运行成功前不主张已验收。
-4. **GitHub部署**：当前为本地开发分支 `feature/workbench-v0.1`。远程分支/PR与定时工作流是否生效，须在指定仓库上传并查看Actions结果。仅推送开发分支不会启用默认分支定时扫描。
+2. **本机Docker**：本机未安装Docker，本机容器执行及超时/取消仍待验证。GitHub Ubuntu runner已真实构建镜像，并通过 `scripts/runner_smoke.py` 的计算、PNG生成和输入只读检查；这不能替代Windows Docker Desktop及异常场景验收。
+3. **完整新电脑部署**：当前Windows环境启动通过，CI在干净Windows/Ubuntu环境安装依赖并通过后端测试；完整新电脑启动、macOS与Compose仍待实机验证。
+4. **月末定时启用**：远程开发分支与PR已发布，首次push/PR自动检查已通过。月末工作流需合并到默认分支后生效；真实月末调度、GitHub停用后恢复仍待对应时间与操作验证。
 5. **科研有效性**：首版基准为公开小样例，只能验证相应任务约束；不能替代领域专家检查、实验复现或大规模真实任务评测。
 
 ## 用户环境验收步骤
