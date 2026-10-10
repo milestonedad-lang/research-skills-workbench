@@ -1,0 +1,44 @@
+name: Monthly public skills catalog
+on:
+  schedule:
+    - cron: '17 13 28-31 * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: public-catalog-update
+  cancel-in-progress: false
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.lock.txt
+      - name: Scan pinned public skill sources
+        env:
+          PYTHONUTF8: '1'
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            python scripts/scan_catalog.py --month-end-only
+          else
+            python scripts/scan_catalog.py
+          fi
+      - name: Publish checksummed snapshot
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add catalog/snapshot.json catalog/snapshot.sha256 catalog/report.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Update public research skills catalog'
+            git push
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: public-catalog
+          path: |
+            catalog/snapshot.*
+            catalog/report.json

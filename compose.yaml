@@ -1,0 +1,13 @@
+services:
+  workbench:
+    build: .
+    ports:
+      - "127.0.0.1:8765:8765"
+    volumes:
+      - workbench-data:/app/data
+    restart: unless-stopped
+# This container deployment supports catalog and text workflows.
+# For isolated code execution, run the backend on the host with Docker installed.
+# The Docker daemon socket is intentionally not exposed to the web service.
+volumes:
+  workbench-data:
